@@ -6,16 +6,30 @@
 //
 
 import SwiftUI
+import AppKit
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+public struct ContentView: View {
+    @StateObject private var stateManager: AppStateManager
+    
+    init() {
+        let env = EnvironmentManager()
+        _stateManager = StateObject(wrappedValue: AppStateManager(envManager: env))
+    }
+    
+    public var body: some View {
+        NavigationStack {
+            Group {
+                if stateManager.currentState == .running {
+                    DashboardView()
+                } else {
+                    WelcomeView(stateManager: stateManager)
+                }
+            }
         }
-        .padding()
+        .frame(minWidth: 1000, minHeight: 700)
+        .task {
+            await stateManager.evaluateEnvironment()
+        }
     }
 }
 
