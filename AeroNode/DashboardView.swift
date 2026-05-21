@@ -7,55 +7,96 @@
 
 import SwiftUI
 
+/// The main dashboard view providing navigation and high-level controls for the IoT monitoring system.
 struct DashboardView: View {
     @StateObject private var viewModel = DashboardViewModel()
     @Environment(\.colorScheme) var colorScheme
-    
+
+    @State private var selectedTab: String = "Overview"
+
     var body: some View {
         NavigationSplitView {
-            List(selection: $viewModel.selection) {
+            List(selection: $selectedTab) {
                 Section("Monitor") {
-                    Label("Overview", systemImage: "chart.bar.fill").tag("Overview")
-                    Label("Telemetry", systemImage: "wave.3.right").tag("Telemetry")
+                    Label("Overview", systemImage: "chart.bar.fill").tag(
+                        "Overview"
+                    )
+                    Label("Telemetry", systemImage: "wave.3.right").tag(
+                        "Telemetry"
+                    )
                 }
-                
+
                 Section("System") {
-                    Label("Docker Logs", systemImage: "terminal.fill").tag("Logs")
-                    Label("Settings", systemImage: "gearshape.fill").tag("Settings")
+                    Label("Docker Logs", systemImage: "terminal.fill").tag(
+                        "Logs"
+                    )
                 }
-                
-                
+
                 Divider()
-                
-                VStack(alignment: .leading, spacing: 12) {
+
+                VStack(alignment: .leading, spacing: 16) {
                     Text("Control Center")
                         .font(.caption.bold())
                         .foregroundStyle(.secondary)
-                    
+
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("Active Units:")
                                 .font(.subheadline)
                             Spacer()
                             Text("\(Int(viewModel.activeCount))")
-                                .font(.system(.subheadline, design: .monospaced))
+                                .font(
+                                    .system(.subheadline, design: .monospaced)
+                                )
                                 .bold()
-                                .foregroundStyle(viewModel.activeCount > 0 ? .green : .red)
+                                .foregroundStyle(
+                                    viewModel.activeCount > 0 ? .green : .red
+                                )
                         }
-                        
-                        Slider(value: $viewModel.activeCount, in: 0...24, step: 1)
-                            .onChange(of: viewModel.activeCount) { _ in
+
+                        Slider(
+                            value: $viewModel.activeCount,
+                            in: 0...100,
+                            step: 5
+                        )
+                        .onChange(of: viewModel.activeCount) {
+                            oldValue,
+                            newValue in
+                            DispatchQueue.main.async {
                                 viewModel.updateTurbineStates()
                             }
-                        
-                        if viewModel.activeCount == 0 {
-                            Text("System on Standby")
-                                .font(.caption2)
-                                .foregroundStyle(.red.opacity(0.8))
-                                .transition(.opacity)
                         }
                     }
-                    
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("QoS Level:")
+                                .font(.subheadline)
+                            Spacer()
+                            Text("\(Int(viewModel.qosLevel))")
+                                .font(
+                                    .system(.subheadline, design: .monospaced)
+                                )
+                                .bold()
+                                .foregroundStyle(.purple)
+                        }
+
+                        Slider(value: $viewModel.qosLevel, in: 0...2, step: 1)
+
+                        if viewModel.qosLevel > 0 {
+                            Text("Higher QoS increases latency")
+                                .font(.caption2)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+
+                    if viewModel.activeCount == 0 {
+                        Text("System on Standby")
+                            .font(.caption2)
+                            .foregroundStyle(.red.opacity(0.8))
+                            .transition(.opacity)
+                    }
+
                     Button(role: .destructive) {
                         viewModel.stopAll()
                     } label: {
@@ -73,47 +114,85 @@ struct DashboardView: View {
         } detail: {
             ZStack {
                 adaptiveBackground
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 25) {
-                        headerSection
-                        
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 130))], spacing: 20) {
-                            ForEach(viewModel.turbines) { turbine in
-                                TurbineNode(turbine: turbine)
+
+                if selectedTab == "Overview" {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 25) {
+                            headerSection
+
+                            LazyVGrid(
+                                columns: [GridItem(.adaptive(minimum: 130))],
+                                spacing: 20
+                            ) {
+                                ForEach(viewModel.turbines) { turbine in
+                                    TurbineNode(turbine: turbine)
+                                }
                             }
+                            .padding()
                         }
-                        .padding()
                     }
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(1)
+                    .id("OverviewScreen")
+
+                } else if selectedTab == "Telemetry" {
+                    TelemetryView(viewModel: viewModel)
+                        .transition(
+                            .opacity.combined(with: .scale(scale: 0.98))
+                        )
+                        .zIndex(2)
+                        .id("TelemetryScreen")
+
+                } else if selectedTab == "Logs" {
+                    DockerLogsView()
+                        .transition(
+                            .opacity.combined(with: .scale(scale: 0.98))
+                        )
+                        .zIndex(3)
+                        .id("LogsScreen")
+
+                } else {
+                    Text("Select a section from the sidebar")
+                        .foregroundStyle(.secondary)
+                        .transition(.opacity)
+                        .zIndex(0)
+                        .id("PlaceholderScreen")
                 }
             }
+
+            .animation(.easeInOut(duration: 0.3), value: selectedTab)
         }
     }
-    
+
     var adaptiveBackground: some View {
         ZStack {
-            
             Color(nsColor: .windowBackgroundColor)
                 .ignoresSafeArea()
-            
-            
-            MeshGradient(width: 3, height: 3, points: [
-                [0, 0], [0.5, 0], [1, 0],
-                [0, 0.5], [0.5, 0.5], [1, 0.5],
-                [0, 1], [0.5, 1], [1, 1]
-            ], colors: colorScheme == .dark ? [
-                .black, .black, .blue.opacity(0.2),
-                .black, .indigo.opacity(0.2), .black,
-                .blue.opacity(0.1), .black, .black
-            ] : [
-                .white, .white, .blue.opacity(0.1),
-                .white, .cyan.opacity(0.1), .white,
-                .blue.opacity(0.05), .white, .white
-            ])
+
+            MeshGradient(
+                width: 3,
+                height: 3,
+                points: [
+                    [0, 0], [0.5, 0], [1, 0],
+                    [0, 0.5], [0.5, 0.5], [1, 0.5],
+                    [0, 1], [0.5, 1], [1, 1],
+                ],
+                colors: colorScheme == .dark
+                    ? [
+                        .black, .black, .blue.opacity(0.2),
+                        .black, .indigo.opacity(0.2), .black,
+                        .blue.opacity(0.1), .black, .black,
+                    ]
+                    : [
+                        .white, .white, .blue.opacity(0.1),
+                        .white, .cyan.opacity(0.1), .white,
+                        .blue.opacity(0.05), .white, .white,
+                    ]
+            )
             .ignoresSafeArea()
         }
     }
-    
+
     var headerSection: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Turbine Matrix")
@@ -127,10 +206,10 @@ struct DashboardView: View {
     }
 }
 
-// --- LIQUID GLASS NODE ---
+/// A visual representation of a single wind turbine unit.
 struct TurbineNode: View {
     let turbine: Turbine
-    
+
     var body: some View {
         VStack(spacing: 12) {
             ZStack {
@@ -141,13 +220,17 @@ struct TurbineNode: View {
                         Circle()
                             .stroke(.primary.opacity(0.1), lineWidth: 0.5)
                     )
-                
+
                 Circle()
                     .fill(turbine.isRunning ? Color.green : Color.red)
                     .frame(width: 12, height: 12)
-                    .shadow(color: (turbine.isRunning ? Color.green : Color.red).opacity(0.6), radius: 6)
+                    .shadow(
+                        color: (turbine.isRunning ? Color.green : Color.red)
+                            .opacity(0.6),
+                        radius: 6
+                    )
             }
-            
+
             Text("Unit \(String(format: "%02d", turbine.id))")
                 .font(.system(.caption2, design: .monospaced))
                 .bold()

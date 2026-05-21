@@ -6,6 +6,11 @@
 	objectVersion = 100;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A32359752FBF5C0D00F3B998 /* CocoaMQTT in Frameworks */ = {isa = PBXBuildFile; productRef = A32359742FBF5C0D00F3B998 /* CocoaMQTT */; };
+		A32359772FBF5C0D00F3B998 /* CocoaMQTTWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = A32359762FBF5C0D00F3B998 /* CocoaMQTTWebSocket */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A3B4263E2FB36F68003B4842 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -51,6 +56,8 @@
 		A3B4262D2FB36F67003B4842 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				A32359772FBF5C0D00F3B998 /* CocoaMQTTWebSocket in Frameworks */,
+				A32359752FBF5C0D00F3B998 /* CocoaMQTT in Frameworks */,
 			);
 		};
 		A3B4263A2FB36F68003B4842 /* Frameworks */ = {
@@ -103,6 +110,10 @@
 				A3B426322FB36F67003B4842 /* AeroNode */,
 			);
 			name = AeroNode;
+			packageProductDependencies = (
+				A32359742FBF5C0D00F3B998 /* CocoaMQTT */,
+				A32359762FBF5C0D00F3B998 /* CocoaMQTTWebSocket */,
+			);
 			productName = AeroNode;
 			productReference = A3B426302FB36F67003B4842 /* AeroNode.app */;
 			productType = "com.apple.product-type.application";
@@ -157,7 +168,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					A3B4262F2FB36F67003B4842 = {
 						CreatedOnToolsVersion = 26.4.1;
@@ -181,6 +192,9 @@
 			);
 			mainGroup = A3B426272FB36F67003B4842;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A32359732FBF5C0D00F3B998 /* XCRemoteSwiftPackageReference "CocoaMQTT" */,
+			);
 			preferredProjectObjectVersion = 100;
 			productRefGroup = A3B426312FB36F67003B4842 /* Products */;
 			projectDirPath = "";
@@ -277,6 +291,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -302,6 +317,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -341,6 +357,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -359,6 +376,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -373,6 +391,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -419,6 +438,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
@@ -461,6 +481,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.4;
@@ -482,6 +503,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.4;
@@ -502,6 +524,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -521,6 +544,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = URL46TSW8K;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -571,6 +595,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A32359732FBF5C0D00F3B998 /* XCRemoteSwiftPackageReference "CocoaMQTT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/emqx/CocoaMQTT.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A32359742FBF5C0D00F3B998 /* CocoaMQTT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A32359732FBF5C0D00F3B998 /* XCRemoteSwiftPackageReference "CocoaMQTT" */;
+			productName = CocoaMQTT;
+		};
+		A32359762FBF5C0D00F3B998 /* CocoaMQTTWebSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A32359732FBF5C0D00F3B998 /* XCRemoteSwiftPackageReference "CocoaMQTT" */;
+			productName = CocoaMQTTWebSocket;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A3B426282FB36F67003B4842 /* Project object */;
 }
