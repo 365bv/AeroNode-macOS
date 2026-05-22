@@ -158,38 +158,22 @@ public class EnvironmentManager: ObservableObject {
         _ = try await ShellManager.shared.run(command)
     }
 
-    /// Sends a JSON configuration payload to the backend to update simulation parameters.
-    public func updateSystemState(count: Int, qos: Int) async {
-        // Prepare the JSON payload for the Python script
-        let jsonPayload = "{\\\"count\\\": \(count), \\\"qos\\\": \(qos)}"
-
-        let command = """
-            export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && \
-            cd "\(repoURL.path)" && \
-            docker-compose exec -T mqtt_broker mosquitto_pub -t "sim/control/turbine_count" -m "\(jsonPayload)"
-            """
-
-        do {
-            let output = try await ShellManager.shared.run(command)
-            print("🚀 MQTT Sent successfully: \(jsonPayload)")
-            if !output.isEmpty {
-                print("Output: \(output)")
-            }
-        } catch {
-            print("❌ Failed to send MQTT: \(error)")
-        }
-    }
-
-    /// Shuts down the Docker Compose stack.
+    /// Shuts down the Docker Compose stack in the background.
     public func stopBackend() {
-        let command =
-            "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\" && cd \"\(repoURL.path)\" && docker-compose down"
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        process.arguments = ["-c", command]
-        try? process.run()
-        process.waitUntilExit()
+        let targetPath = self.repoURL.path
+
+        Task.detached(priority: .background) {
+            let command =
+                "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\" && cd \"\(targetPath)\" && docker-compose down"
+
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+            process.arguments = ["-c", command]
+            try? process.run()
+            process.waitUntilExit()
+            print("🛑 Docker cleanup finished in background.")
+        }
     }
 
     /// Fetches the recent log tail for a specified Docker service.

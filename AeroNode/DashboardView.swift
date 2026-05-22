@@ -9,7 +9,7 @@ import SwiftUI
 
 /// The main dashboard view providing navigation and high-level controls for the IoT monitoring system.
 struct DashboardView: View {
-    @StateObject private var viewModel = DashboardViewModel()
+    @State private var viewModel = DashboardViewModel()
     @Environment(\.colorScheme) var colorScheme
 
     @State private var selectedTab: String = "Overview"
@@ -59,13 +59,6 @@ struct DashboardView: View {
                             in: 0...100,
                             step: 5
                         )
-                        .onChange(of: viewModel.activeCount) {
-                            oldValue,
-                            newValue in
-                            DispatchQueue.main.async {
-                                viewModel.updateTurbineStates()
-                            }
-                        }
                     }
 
                     VStack(alignment: .leading, spacing: 8) {

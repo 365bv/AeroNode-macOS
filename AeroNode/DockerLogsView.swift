@@ -11,8 +11,8 @@ import SwiftUI
 struct DockerLogsView: View {
     @State private var selectedService: String = "All"
     @State private var logsText: String = "Connecting to Docker daemon..."
+    @State private var envManager = EnvironmentManager()
 
-    let envManager = EnvironmentManager()
     let services = [
         "All", "mqtt_broker", "database", "sensor_emulator", "data_collector",
         "alerter",
@@ -73,13 +73,9 @@ struct DockerLogsView: View {
                     for: selectedService
                 )
 
-                if !Task.isCancelled {
-                    await MainActor.run {
-                        self.logsText = fetchedLogs
-                    }
-                }
+                logsText = fetchedLogs
 
-                try? await Task.sleep(for: .seconds(1))
+                try? await Task.sleep(for: .seconds(2))
             }
         }
     }

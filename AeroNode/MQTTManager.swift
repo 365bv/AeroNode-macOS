@@ -28,6 +28,8 @@ struct AlertPayload: Codable {
     let timestamp: Int64
 }
 
+private let jsonDecoder = JSONDecoder()
+
 /// Manages MQTT connections, subscriptions, and data ingestion from the local broker.
 class MQTTManager: CocoaMQTTDelegate {
     var mqtt: CocoaMQTT?
@@ -70,7 +72,7 @@ class MQTTManager: CocoaMQTTDelegate {
 
         if message.topic.contains("/status") {
             do {
-                let payload = try JSONDecoder().decode(
+                let payload = try jsonDecoder.decode(
                     TurbinePayload.self,
                     from: jsonData
                 )
@@ -95,7 +97,7 @@ class MQTTManager: CocoaMQTTDelegate {
             }
         } else if message.topic == "norway/energy/alerts" {
             do {
-                let alert = try JSONDecoder().decode(
+                let alert = try jsonDecoder.decode(
                     AlertPayload.self,
                     from: jsonData
                 )
@@ -129,6 +131,14 @@ class MQTTManager: CocoaMQTTDelegate {
         }
     }
 
+    func sendControlCommand(count: Int, qos: Int) {
+        let payload = "{\"count\": \(count), \"qos\": \(qos)}"
+        mqtt?.publish(
+            "sim/control/turbine_count",
+            withString: payload,
+            qos: .qos1
+        )
+    }
     // --- Required Delegate Stubs ---
     func mqtt(
         _ mqtt: CocoaMQTT,

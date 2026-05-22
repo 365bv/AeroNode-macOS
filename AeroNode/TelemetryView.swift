@@ -10,7 +10,7 @@ import SwiftUI
 
 /// A view responsible for rendering real-time telemetry charts for the turbine cluster.
 struct TelemetryView: View {
-    @ObservedObject var viewModel: DashboardViewModel
+    @Bindable var viewModel: DashboardViewModel
 
     var turbineOptions: [String] {
         var options = ["All"]
@@ -129,6 +129,7 @@ struct TelemetryView: View {
                                 )
                             )
                         }
+                        .animation(.none, value: chartData.count)
                     }
 
                     chartCard(title: "Wind Speed (m/s)", color: .cyan) {
@@ -140,6 +141,7 @@ struct TelemetryView: View {
                             .interpolationMethod(.catmullRom)
                             .foregroundStyle(Color.cyan.gradient)
                         }
+                        .animation(.none, value: chartData.count)
                     }
 
                     chartCard(
@@ -156,6 +158,7 @@ struct TelemetryView: View {
                             .interpolationMethod(.monotone)
                             .foregroundStyle(Color.orange.gradient)
                         }
+                        .animation(.none, value: chartData.count)
                     }
 
                     chartCard(title: "Rotor Speed (RPM)", color: .blue) {
@@ -167,6 +170,7 @@ struct TelemetryView: View {
                             .interpolationMethod(.catmullRom)
                             .foregroundStyle(Color.blue.gradient)
                         }
+                        .animation(.none, value: chartData.count)
                     }
 
                     // Keep zero-baseline for latency to ensure the bar chart renders correctly
@@ -184,6 +188,7 @@ struct TelemetryView: View {
                             .foregroundStyle(Color.purple.gradient)
                         }
                     }
+                    .animation(.none, value: chartData.count)
                 }
                 .padding()
             }
