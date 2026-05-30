@@ -46,7 +46,6 @@ struct DockerLogsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.top, 30)
 
             ScrollView {
                 Text(logsText)

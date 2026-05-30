@@ -1,35 +1,34 @@
-//
-//  DashboardView.swift
-//  AeroNode
-//
-//  Created by Vitalii Bazavluk on 12.05.2026.
-//
+////
+////  DashboardView.swift
+////  AeroNode
+////
+////  Created by Vitalii Bazavluk on 12.05.2026.
+////
 
 import SwiftUI
 
-/// The main dashboard view providing navigation and high-level controls for the IoT monitoring system.
+///// The main dashboard view providing navigation and high-level controls for the IoT monitoring system.
 struct DashboardView: View {
     @State private var viewModel = DashboardViewModel()
     @Environment(\.colorScheme) var colorScheme
-
-    @State private var selectedTab: String = "Overview"
+    @State private var selectedTab: String? = "Overview"
 
     var body: some View {
         NavigationSplitView {
             List(selection: $selectedTab) {
                 Section("Monitor") {
-                    Label("Overview", systemImage: "chart.bar.fill").tag(
-                        "Overview"
-                    )
-                    Label("Telemetry", systemImage: "wave.3.right").tag(
-                        "Telemetry"
-                    )
+                    NavigationLink(value: "Overview") {
+                        Label("Overview", systemImage: "chart.bar.fill")
+                    }
+                    NavigationLink(value: "Telemetry") {
+                        Label("Telemetry", systemImage: "wave.3.right")
+                    }
                 }
 
                 Section("System") {
-                    Label("Docker Logs", systemImage: "terminal.fill").tag(
-                        "Logs"
-                    )
+                    NavigationLink(value: "Logs") {
+                        Label("Docker Logs", systemImage: "terminal.fill")
+                    }
                 }
 
                 Divider()
@@ -106,9 +105,9 @@ struct DashboardView: View {
             .navigationTitle("AeroNode")
         } detail: {
             ZStack {
-                adaptiveBackground
 
                 if selectedTab == "Overview" {
+
                     ScrollView {
                         VStack(alignment: .leading, spacing: 25) {
                             headerSection
@@ -152,37 +151,7 @@ struct DashboardView: View {
                         .id("PlaceholderScreen")
                 }
             }
-
             .animation(.easeInOut(duration: 0.3), value: selectedTab)
-        }
-    }
-
-    var adaptiveBackground: some View {
-        ZStack {
-            Color(nsColor: .windowBackgroundColor)
-                .ignoresSafeArea()
-
-            MeshGradient(
-                width: 3,
-                height: 3,
-                points: [
-                    [0, 0], [0.5, 0], [1, 0],
-                    [0, 0.5], [0.5, 0.5], [1, 0.5],
-                    [0, 1], [0.5, 1], [1, 1],
-                ],
-                colors: colorScheme == .dark
-                    ? [
-                        .black, .black, .blue.opacity(0.2),
-                        .black, .indigo.opacity(0.2), .black,
-                        .blue.opacity(0.1), .black, .black,
-                    ]
-                    : [
-                        .white, .white, .blue.opacity(0.1),
-                        .white, .cyan.opacity(0.1), .white,
-                        .blue.opacity(0.05), .white, .white,
-                    ]
-            )
-            .ignoresSafeArea()
         }
     }
 
@@ -195,7 +164,6 @@ struct DashboardView: View {
                 .foregroundStyle(.secondary)
         }
         .padding(.horizontal)
-        .padding(.top, 30)
     }
 }
 
